@@ -44,6 +44,8 @@ func (e ErrRequeue) Error() string {
 	return e.Err.Error()
 }
 
+// NOTE(JamLee): Queue 这个接口扩展了 Store 这个接口，这个就是前面我们说的本地存储，队列实际上也是一种存储，然后在 Store 的基础上增加
+//  Pop、AddIfNotPresent、HasSynced、Close 4个函数就变成了 Queue 队列了
 // Queue extends Store with a collection of Store keys to "process".
 // Every Add, Update, or Delete may put the object's key in that collection.
 // A Queue has a way to derive the corresponding key given an accumulator.
@@ -91,6 +93,7 @@ func Pop(queue Queue) interface{} {
 	return result
 }
 
+// NOTE(JamLee): FIFO 实现了 Queue 的接口
 // FIFO is a Queue in which (a) each accumulator is simply the most
 // recently provided object and (b) the collection of keys to process
 // is a FIFO.  The accumulators all start out empty, and deleting an

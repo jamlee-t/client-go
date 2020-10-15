@@ -22,7 +22,7 @@ import (
 	"k8s.io/apimachinery/pkg/api/meta"
 	"k8s.io/apimachinery/pkg/util/sets"
 )
-
+// NOTE(JamLee): Indexer 就是扩展的 Store
 // Indexer extends Store with multiple indices and restricts each
 // accumulator to simply hold the current object (and be empty after
 // Delete).

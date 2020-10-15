@@ -45,6 +45,7 @@ import (
 
 const defaultExpectedTypeName = "<unspecified>"
 
+// NOTE(JamLee): Reflector(反射器) 监听指定的资源，将所有的变化都反射到给定的存储中去
 // Reflector watches a specified resource and causes all changes to be reflected in the given store.
 type Reflector struct {
 	// name identifies this reflector. By default it will be a file:line if possible.
