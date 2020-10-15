@@ -71,6 +71,7 @@ type ClientContentConfig struct {
 	Negotiator runtime.ClientNegotiator
 }
 
+// NOTE(JamLee): RESTClient 本质上是对 http.Client 的一个封装。
 // RESTClient imposes common Kubernetes API conventions on a set of resource paths.
 // The baseURL is expected to point to an HTTP or HTTPS path that is the parent
 // of one or more resources.  The server should return a decodable API resource
