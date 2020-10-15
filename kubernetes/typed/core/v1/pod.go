@@ -59,6 +59,7 @@ type pods struct {
 	ns     string
 }
 
+// NOTE(JamLee): 到这里其实也没有开始调用 api 接口，只是启用了一个 client 而已
 // newPods returns a Pods
 func newPods(c *CoreV1Client, namespace string) *pods {
 	return &pods{
@@ -67,6 +68,7 @@ func newPods(c *CoreV1Client, namespace string) *pods {
 	}
 }
 
+// NOTE(JamLee): 到这里才会真正的Get内容, 访问后端 api
 // Get takes name of the pod, and returns the corresponding pod object, and an error if there is any.
 func (c *pods) Get(ctx context.Context, name string, options metav1.GetOptions) (result *v1.Pod, err error) {
 	result = &v1.Pod{}

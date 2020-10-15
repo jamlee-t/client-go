@@ -65,7 +65,7 @@ import (
 	rest "k8s.io/client-go/rest"
 	flowcontrol "k8s.io/client-go/util/flowcontrol"
 )
-
+// NOTE(JamLee): 接口方法集, 可以用于函数参数的类型限制
 type Interface interface {
 	Discovery() discovery.DiscoveryInterface
 	AdmissionregistrationV1() admissionregistrationv1.AdmissionregistrationV1Interface
@@ -110,6 +110,7 @@ type Interface interface {
 	StorageV1alpha1() storagev1alpha1.StorageV1alpha1Interface
 }
 
+// NOTE(JamLee): clientset 是多种 client 组成，为什么每个 group 对应一个 client 呢？
 // Clientset contains the clients for groups. Each group has exactly one
 // version included in a Clientset.
 type Clientset struct {
@@ -453,6 +454,7 @@ func NewForConfig(c *rest.Config) (*Clientset, error) {
 	if err != nil {
 		return nil, err
 	}
+	// NOTE(JamLee): 以 corev1 为例子来分析，其他 client 应该是大同小异
 	cs.coreV1, err = corev1.NewForConfig(&configShallowCopy)
 	if err != nil {
 		return nil, err

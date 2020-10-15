@@ -119,6 +119,12 @@ func NewForConfig(c *rest.Config) (*CoreV1Client, error) {
 	if err := setConfigDefaults(&config); err != nil {
 		return nil, err
 	}
+
+	// NOTE(JamLee): 本质上调用了 rest.RESTClientFor 形成一个 RestClient, CoreV1Client 给 RestClient 包了一层。
+	//  这种做法相当于是基于一个共享的 client 然后形成各种调用 client 的方法。
+	//  CoreV1Interface 是个什么？ CoreV1Interface 是对 CoreV1Client 的一种接口限制， 里面全部都是 Getter。
+	//  Getter 是什么？ clientset.CoreV1().Pods("").List(metav1.ListOptions{}) 中可以到看到每个对象除了对象内置的方法，
+	//  还有一个 Getter 用于获取对象。
 	client, err := rest.RESTClientFor(&config)
 	if err != nil {
 		return nil, err
