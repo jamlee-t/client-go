@@ -31,10 +31,10 @@ func TestInformer(t *testing.T) {
 	podInformer := sharedInformers.Core().V1().Pods().Informer()
 	//为pod informer添加 controller的 handlerFunc  触发回调函数之后 会通过 addCh 传给 nextCh 管道然后调用controller的对应的handler来做处理
 	podInformer.AddEventHandler(cache.ResourceEventHandlerFuncs{
-		//pod资源对象创建的时候出发的回调方法
+		// Pod 资源对象创建的时候出发的回调方法
 		AddFunc: func(obj interface{}) {
 			obja := obj.(v1.Object)
-			fmt.Println(obja)
+			fmt.Println("创建: " + obja.GetName())
 		},
 		//更新回调
 		UpdateFunc: func(oldObj, newObj interface{}) {
