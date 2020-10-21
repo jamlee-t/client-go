@@ -2,9 +2,10 @@ package informer
 
 import (
 	"fmt"
+	kcorev1 "k8s.io/api/core/v1"
 	v1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 	"k8s.io/apimachinery/pkg/labels"
-	"k8s.io/apimachinery/pkg/util/runtime"
+	utilruntime "k8s.io/apimachinery/pkg/util/runtime"
 	"k8s.io/client-go/informers"
 	"k8s.io/client-go/kubernetes"
 	"k8s.io/client-go/tools/cache"
@@ -65,9 +66,34 @@ func TestInformerNode(t *testing.T) {
 	nodeInformer := factory.Core().V1().Nodes()
 	go nodeInformer.Informer().Run(stopch)
 	if !cache.WaitForCacheSync(stopch, nodeInformer.Informer().HasSynced) {
-		runtime.HandleError(fmt.Errorf("Timed out waiting for caches to sync"))
+		utilruntime.HandleError(fmt.Errorf("Timed out waiting for caches to sync"))
 		return
 	}
 	nodes, _ := nodeInformer.Lister().List(labels.NewSelector())
 	fmt.Println(nodes);
+}
+
+func TestIndexInInformer(t *testing.T) {
+	config ,err := clientcmd.BuildConfigFromFlags("","/Users/jamlee/.kube/config")
+	if err != nil {
+		panic(err)
+	}
+	//通过config 拿到client set客户端
+	clientset ,err := kubernetes.NewForConfig(config)
+	if err != nil {
+		panic(err)
+	}
+	stopch := make(chan struct{})
+	defer close(stopch)
+	//通过client set客户端以及一个rsync（多久设置一次重新同步 也就是同步间隔时间 如果是0 那么禁用同步功能） 我们拿到一个informer的集合
+	sharedInformers := informers.NewSharedInformerFactory(clientset,time.Minute)
+	//通过sharedInformers 我们获取到pod的informer
+	podInformer := sharedInformers.Core().V1().Pods().Informer()
+	podInformer.AddIndexers(map[string]cache.IndexFunc{
+		"metadata.name": func(obj interface{}) ([]string, error) {
+			return []string{string(obj.(*kcorev1.Pod).Spec.RestartPolicy)}, nil
+		},
+	})
+	//这里会调用reflector的run listandwatch 然后以goroutine的方式运行
+	podInformer.Run(stopch)
 }
