@@ -10,6 +10,24 @@
 生成四样内容： typed client, informers, listers and deep-copy function
 https://github.com/kubernetes/code-generator  
 
+## restClient
+每一个资源，例如 pod 都会生成一个 client，但是其实 pod 和 service 使用的 restClient应该是一样的。都是用的 core_client.go
+```go
+// kubernetes/typed/core/v1/core_client.go:150
+func setConfigDefaults(config *rest.Config) error {
+	gv := v1.SchemeGroupVersion
+	config.GroupVersion = &gv
+	config.APIPath = "/api"
+	config.NegotiatedSerializer = scheme.Codecs.WithoutConversion()
+
+	if config.UserAgent == "" {
+		config.UserAgent = rest.DefaultKubernetesUserAgent()
+	}
+
+	return nil
+}
+```
+
 ## Informer
 informer 也被称为 shared informer ，他是可以共享使用的，如果每一个 informer 使用一个 reflector 那么会运行相当多的 listandwatch 会增加 api 的复杂。shared informer 可以使同一类资源 informer 共享一个 reflector 可以节约资源。
 
