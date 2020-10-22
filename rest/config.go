@@ -274,7 +274,7 @@ type ContentConfig struct {
 	//   from Kubernetes.
 	NegotiatedSerializer runtime.NegotiatedSerializer
 }
-
+// NOTE(JamLee): 从 config 中获取 restclient
 // RESTClientFor returns a RESTClient that satisfies the requested attributes on a client Config
 // object. Note that a RESTClient may require fields that are optional when initializing a Client.
 // A RESTClient created by this method is generic - it expects to operate on an API that follows

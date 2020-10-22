@@ -37,6 +37,7 @@ const (
 	envBackoffDuration = "KUBE_CLIENT_BACKOFF_DURATION"
 )
 
+// NOTE(JamLee): 封装 RESTClient的接口
 // Interface captures the set of operations for generically interacting with Kubernetes REST apis.
 type Interface interface {
 	GetRateLimiter() flowcontrol.RateLimiter

@@ -87,6 +87,7 @@ type controller struct {
 	clock          clock.Clock
 }
 
+// NOTE(JamLee): 这一部分和 controller-runtime 功能上有些重叠
 // Controller is a low-level controller that is parameterized by a
 // Config and used in sharedIndexInformer.
 type Controller interface {

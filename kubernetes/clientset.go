@@ -110,7 +110,7 @@ type Interface interface {
 	StorageV1alpha1() storagev1alpha1.StorageV1alpha1Interface
 }
 
-// NOTE(JamLee): clientset 是多种 client 组成，为什么每个 group 对应一个 client 呢？
+// QUESTION(JamLee): clientset 是多种 client 组成，为什么每个 group 对应一个 client 呢？
 // Clientset contains the clients for groups. Each group has exactly one
 // version included in a Clientset.
 type Clientset struct {

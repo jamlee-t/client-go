@@ -3,6 +3,13 @@
 ## 初步阅读步骤
 1. 查看 corev1 发起请求是如何进行的。
 
+自动生成的文件夹:
+- lister
+- informer 
+
+生成四样内容： typed client, informers, listers and deep-copy function
+https://github.com/kubernetes/code-generator  
+
 ## Informer
 informer 也被称为 shared informer ，他是可以共享使用的，如果每一个 informer 使用一个 reflector 那么会运行相当多的 listandwatch 会增加 api 的复杂。shared informer 可以使同一类资源 informer 共享一个 reflector 可以节约资源。
 
@@ -26,6 +33,8 @@ func testServerEnv(t *testing.T, statusCode int) (*httptest.Server, *utiltesting
 ## 例子
 - indexer/index_test.go: index 的使用方法
 
+其他
+动态客户端例子: https://github.com/kubernetes/client-go/blob/master/examples/dynamic-create-update-delete-deployment/main.go
 
 ## 参考资料
 [client-go的使用及源码分析](https://www.bookstack.cn/read/huweihuang-kubernetes-notes/develop-client-go.md)
