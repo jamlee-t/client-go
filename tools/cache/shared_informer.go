@@ -355,7 +355,7 @@ func (s *sharedIndexInformer) Run(stopCh <-chan struct{}) {
 	func() {
 		s.startedLock.Lock()
 		defer s.startedLock.Unlock()
-
+		// NOTE(JamLee): informer 底层是一个 low level 的 controller
 		s.controller = New(cfg)
 		s.controller.(*controller).clock = s.clock
 		s.started = true

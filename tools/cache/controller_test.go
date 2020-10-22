@@ -50,8 +50,10 @@ func Example() {
 	deletionCounter := make(chan string, 1000)
 
 	cfg := &Config{
+		// NOTE(JamLee): deltafifi 又有 store， indexer， 又是 queue
 		Queue:            fifo,
 		ListerWatcher:    source,
+		// NOTE(JamLee): 监控一类资源
 		ObjectType:       &v1.Pod{},
 		FullResyncPeriod: time.Millisecond * 100,
 		RetryOnError:     false,

@@ -46,7 +46,7 @@ func TestInformer(t *testing.T) {
 		},
 	})
 
-	//这里会调用reflector的run listandwatch 然后以goroutine的方式运行
+	//这里会调用reflector的run listandwatch 然后以goroutine的方式运行。其实里面是controller
 	podInformer.Run(stopch)
 }
 

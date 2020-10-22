@@ -31,6 +31,31 @@ func setConfigDefaults(config *rest.Config) error {
 ## Informer
 informer 也被称为 shared informer ，他是可以共享使用的，如果每一个 informer 使用一个 reflector 那么会运行相当多的 listandwatch 会增加 api 的复杂。shared informer 可以使同一类资源 informer 共享一个 reflector 可以节约资源。
 
+reflector 的入参是实现了 ListerWatcher 接口的对象
+```go
+// tools/cache/reflector.go:130
+func NewReflector(lw ListerWatcher, expectedType interface{}, store Store, resyncPeriod time.Duration) *Reflector {
+	return NewNamedReflector(naming.GetNameFromCallsite(internalPackages...), lw, expectedType, store, resyncPeriod)
+}
+```
+
+reflector 内含 store, watch 到的数据会添加到 store 里。Queue 会作为 store 传入进去。
+```go
+type Reflector struct {
+	...
+	// The destination to sync up with the watch source
+	store Store
+    ...
+}
+```
+
+阅读 tools/cache 包的顺序
+```go
+listwatch.go > reflector.go < queue.go / delta_fifo.go
+```
+
+其实 informer 里包含了 controller， controller 里面有 listwatch, reflector 和 delta。
+
 ## 单元测试
 使用了go本身的单元测试。竟然自己启动一个 http server 这也是有意思。rest/client_test.go:322
 
