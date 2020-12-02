@@ -73,6 +73,29 @@ func testServerEnv(t *testing.T, statusCode int) (*httptest.Server, *utiltesting
 }
 ```
 
+## indexer 
+重要概念: Indices、Index、Indexers 及 IndexFunc。在索引 `Store` 中对象之前，需要每个对象有一个`key`。没有开始索引的情况下至少每个对象有一个`主键`。
+这个主键是靠 `cache.MetaNamespaceKeyFunc` 完成的。
+
+之后，查询的时候，比如按照 nodeName 查询，需要写个取出对象 nodeName。当查询 nodeName=200.200.200.97 时(也就是 indexed value=200.200.200.97)。
+indexers 遍历每个对象用我自定义的 IndexFunc 取出对象的nodeName内容，并比对。
+
+```go
+// 索引函数。用于查对象的索引键集合
+type IndexFunc func(obj interface{}) ([]string, error)
+
+// 索引器管理员。索引器名称（或者索引分类）与 IndexFunc 的映射。存储索引的各种分类
+type Indexers map[string]IndexFunc
+
+// indexed value 与对象键集合的映射
+type Index map["indexed value"]sets.pod // 这就有点像索引查询时的查询缓存了。但我估计每次watch有变动时会更新它
+
+// indexed value 与 Index 索引的映射
+type Indices map[string]Index  // 这就有点像索引查询时的查询缓存
+```
+比如要查找某个节点上所有 pod， pod 按节点名称排序列举出来。这样的一个缓存器叫做: Index。具体来说是 map[node]sets.pod.
+https://jishuin.proginn.com/p/763bfbd2c2bb
+
 ## 例子
 - indexer/index_test.go: index 的使用方法
 

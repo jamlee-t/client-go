@@ -142,17 +142,23 @@ func (c *threadSafeMap) Index(indexName string, obj interface{}) ([]interface{},
 	c.lock.RLock()
 	defer c.lock.RUnlock()
 
+	// indexName 是索引器名称，根据它取得索引器的函数
 	indexFunc := c.indexers[indexName]
 	if indexFunc == nil {
 		return nil, fmt.Errorf("Index with name %s does not exist", indexName)
 	}
 
+	// indexFunc 返回要比对的索引值。例如: NodeName
 	indexedValues, err := indexFunc(obj)
 	if err != nil {
 		return nil, err
 	}
+
+	// indexName 是索引器名称，根据它取得一个 Index 。map[string]sets.String 。还是 NodeName 的例子，假如 NodeName=200.200.200.1， NodeName=200.200.200.2
+	// 这里 index 不就有两个item了。每个item是个set
 	index := c.indices[indexName]
 
+	// 结果存在这里了
 	var storeKeySet sets.String
 	if len(indexedValues) == 1 {
 		// In majority of cases, there is exactly one value matching.
